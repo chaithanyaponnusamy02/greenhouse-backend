@@ -13,6 +13,7 @@ const Evaluation = sequelize.define("activity_evaluations", {
     type: DataTypes.ENUM("approved", "rejected")
   },
   remarks: DataTypes.TEXT,
+  score: DataTypes.INTEGER,
   evaluated_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
