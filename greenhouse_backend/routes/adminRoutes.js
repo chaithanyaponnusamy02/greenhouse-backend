@@ -18,6 +18,7 @@ router.get("/activities/filter", adminController.filterActivities);
 router.delete("/activities/:id", adminController.deleteActivity);
 
 router.get("/evaluations", adminController.getAllEvaluations);
+router.get("/evaluations/detailed", adminController.getAllEvaluationsDetailed);
 
 router.get("/scores/total", adminController.getTotalScore);
 router.get("/activities/summary", adminController.getActivitySummary);

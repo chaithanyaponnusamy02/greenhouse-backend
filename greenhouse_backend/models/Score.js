@@ -1,22 +1,27 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+const mongoose = require("mongoose");
 
-const Score = sequelize.define("scores", {
-  score_id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+const scoreSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
   },
-  activity_id: DataTypes.INTEGER,
-  auditor_id: DataTypes.INTEGER,
-  score: DataTypes.INTEGER,
-  criteria: DataTypes.STRING(100),
+  activity_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "green_activities"
+  },
+  auditor_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users"
+  },
+  score: Number,
+  criteria: {
+    type: String,
+    maxLength: 100
+  },
   scored_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    type: Date,
+    default: Date.now
   }
-}, {
-  timestamps: false
-});
+}, { timestamps: false });
 
-module.exports = Score;
+module.exports = mongoose.model("scores", scoreSchema);

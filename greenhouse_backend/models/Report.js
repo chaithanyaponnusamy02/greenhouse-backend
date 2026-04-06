@@ -1,38 +1,48 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+const mongoose = require("mongoose");
 
-const Report = sequelize.define("reports", {
-  report_id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+const reportSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
   },
-  generated_by: DataTypes.INTEGER,
-  report_title: DataTypes.STRING(255),
+  generated_by: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users"
+  },
+  report_title: {
+    type: String,
+    maxLength: 255
+  },
   report_type: {
-    type: DataTypes.ENUM("Monthly", "Annual"),
-    defaultValue: "Monthly"
+    type: String,
+    enum: ["Monthly", "Annual"],
+    default: "Monthly"
   },
-  start_date: DataTypes.DATE,
-  end_date: DataTypes.DATE,
-  total_score: DataTypes.INTEGER,
-  activities_count: DataTypes.INTEGER,
-  certification_grade: DataTypes.STRING(50),
-  report_path: DataTypes.STRING(255),
+  start_date: Date,
+  end_date: Date,
+  total_score: Number,
+  activities_count: Number,
+  certification_grade: {
+    type: String,
+    maxLength: 50
+  },
+  report_path: {
+    type: String,
+    maxLength: 255
+  },
   status: {
-    type: DataTypes.ENUM("Generated", "Downloaded"),
-    defaultValue: "Generated"
+    type: String,
+    enum: ["Generated", "Downloaded"],
+    default: "Generated"
   },
   download_count: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
+    type: Number,
+    default: 0
   },
   generated_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    type: Date,
+    default: Date.now
   }
-}, {
-  timestamps: false
-});
+}, { timestamps: false });
 
-module.exports = Report;
+module.exports = mongoose.model("reports", reportSchema);

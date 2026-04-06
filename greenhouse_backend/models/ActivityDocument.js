@@ -1,20 +1,22 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+const mongoose = require("mongoose");
 
-const ActivityDocument = sequelize.define("activity_documents", {
-  doc_id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+const activityDocumentSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
   },
-  activity_id: DataTypes.INTEGER,
-  file_path: DataTypes.STRING(255),
+  activity_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "green_activities"
+  },
+  file_path: {
+    type: String,
+    maxLength: 255
+  },
   uploaded_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    type: Date,
+    default: Date.now
   }
-}, {
-  timestamps: false
-});
+}, { timestamps: false });
 
-module.exports = ActivityDocument;
+module.exports = mongoose.model("activity_documents", activityDocumentSchema);

@@ -1,29 +1,33 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+const mongoose = require("mongoose");
 
-const GreenActivity = sequelize.define("green_activities", {
-  activity_id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+const greenActivitySchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
   },
-  title: DataTypes.STRING(200),
-  category: DataTypes.STRING(100),
-  description: DataTypes.TEXT,
-  activity_date: DataTypes.DATE,
-  faculty_id: DataTypes.INTEGER,
+  title: {
+    type: String,
+    maxLength: 200
+  },
+  category: {
+    type: String,
+    maxLength: 100
+  },
+  description: String,
+  activity_date: Date,
+  faculty_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users"
+  },
   status: {
-    type: DataTypes.ENUM("pending", "approved", "rejected"),
-    defaultValue: "pending"
+    type: String,
+    enum: ["pending", "approved", "rejected", "completed"],
+    default: "pending"
   },
   created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    type: Date,
+    default: Date.now
   }
-}, {
-  timestamps: false,
-  tableName: 'green_activities'
+}, { timestamps: false });
 
-});
-
-module.exports = GreenActivity;
+module.exports = mongoose.model("green_activities", greenActivitySchema);

@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const User = require("../models/User");
 require("dotenv").config();
 
 exports.register = async (req, res) => {
@@ -11,20 +11,21 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "User with this email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const newUser = new User({
       name,
       email,
       password: hashedPassword,
       role,
       department
     });
+    await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
@@ -40,7 +41,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -51,7 +52,7 @@ exports.login = async (req, res) => {
     }
 
     const payload = {
-      id: user.user_id,
+      id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,

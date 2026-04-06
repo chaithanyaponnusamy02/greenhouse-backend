@@ -25,6 +25,8 @@ router.put("/profile", studentController.updateProfile);
 
 router.get("/activities", studentController.getApprovedActivities);
 
+router.get("/all-activities", studentController.getAllActivities);
+
 router.get("/activities/:id", studentController.getActivityById);
 
 router.post("/participate/:activityId", studentController.participateInActivity);
@@ -34,6 +36,8 @@ router.get("/my-activities", studentController.getMyActivities);
 router.get("/my-score", studentController.getMyScore);
 
 router.get("/dashboard", studentController.getDashboard);
+
+router.get("/my-evaluations", studentController.getMyActivityEvaluationsDetailed);
 
 router.post("/feedback/:activityId", studentController.submitFeedback);
 

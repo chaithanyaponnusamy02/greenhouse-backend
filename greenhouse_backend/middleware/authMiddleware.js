@@ -1,27 +1,45 @@
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const User = require("../models/User");
 
 exports.authenticateJWT = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization || req.headers["x-access-token"];
+  let token = null;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (authHeader) {
+    if (typeof authHeader === "string" && authHeader.toLowerCase().startsWith("bearer ")) {
+      token = authHeader.slice(7).trim();
+    } else if (typeof authHeader === "string") {
+      token = authHeader.trim();
+    }
+  }
+
+  if (!token) {
     return res.status(401).json({ message: "Unauthorized: No token" });
   }
 
-  const token = authHeader.split(" ")[1];
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    return res.status(500).json({ message: "Server misconfiguration: JWT_SECRET is required" });
+  }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findByPk(decoded.id);
+    const decoded = jwt.verify(token, secret);
+    const user = await User.findById(decoded.id);
 
     if (!user || user.status !== "active") {
       return res.status(401).json({ message: "Unauthorized: Invalid user" });
     }
 
-    req.user = user; 
+    req.user = {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+      name: user.name
+    };
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Unauthorized: Invalid token" });
+    return res.status(401).json({ message: "Unauthorized: Invalid token", error: error.message });
   }
 };
 

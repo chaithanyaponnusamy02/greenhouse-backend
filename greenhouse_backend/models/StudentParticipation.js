@@ -1,17 +1,19 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+const mongoose = require("mongoose");
 
-const StudentParticipation = sequelize.define("student_participation", {
-  participation_id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+const studentParticipationSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
   },
-  student_id: DataTypes.INTEGER,
-  activity_id: DataTypes.INTEGER,
-  participation_date: DataTypes.DATE
-}, {
-  timestamps: false
-});
+  student_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users"
+  },
+  activity_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "green_activities"
+  },
+  participation_date: Date
+}, { timestamps: false });
 
-module.exports = StudentParticipation;
+module.exports = mongoose.model("student_participation", studentParticipationSchema);

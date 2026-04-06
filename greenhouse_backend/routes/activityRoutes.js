@@ -10,7 +10,9 @@ router.use(authenticateJWT);
 router.use(authorizeRoles("faculty"));
 
 router.post("/", activityController.createActivity);
+router.get("/profile", activityController.getProfile);
 router.get("/my", activityController.getMyActivities);
+router.get("/performance", activityController.getPerformanceSummary);
 router.get("/:id", activityController.getSingleActivity);
 router.put("/:id", activityController.updateActivity);
 router.delete("/:id", activityController.deleteActivity);

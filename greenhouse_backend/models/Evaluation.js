@@ -1,25 +1,28 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+const mongoose = require("mongoose");
 
-const Evaluation = sequelize.define("activity_evaluations", {
-  evaluation_id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
+const evaluationSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
   },
-  activity_id: DataTypes.INTEGER,
-  auditor_id: DataTypes.INTEGER,
+  activity_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "green_activities"
+  },
+  auditor_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users"
+  },
   decision: {
-    type: DataTypes.ENUM("approved", "rejected")
+    type: String,
+    enum: ["approved", "rejected"]
   },
-  remarks: DataTypes.TEXT,
-  score: DataTypes.INTEGER,
+  remarks: String,
+  score: Number,
   evaluated_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    type: Date,
+    default: Date.now
   }
-}, {
-  timestamps: false
-});
+}, { timestamps: false });
 
-module.exports = Evaluation;
+module.exports = mongoose.model("activity_evaluations", evaluationSchema);

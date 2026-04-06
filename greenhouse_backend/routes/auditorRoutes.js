@@ -13,6 +13,7 @@ router.post("/activities/:id/score", auditorController.assignScore);
 router.get("/activities/evaluated", auditorController.getEvaluatedActivities);
 router.get("/my-evaluations", auditorController.getMyEvaluations);
 router.get("/dashboard", auditorController.getDashboard);
+router.get("/profile", auditorController.getMyProfile);
 router.get("/activities/filter", auditorController.filterActivities);
 router.get("/notifications", auditorController.getNotifications);
 router.patch("/notifications/:id/read", auditorController.markNotificationRead);
